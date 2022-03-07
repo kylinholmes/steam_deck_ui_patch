@@ -36,14 +36,15 @@ def os_steam_path() -> str:
 def launch_steam(path, is_flatpak) -> None:
     os.chdir(path)
     if SYSTEM == Systems.Win: 
-        subprocess.run(["./steam.exe", "-gamepadui"])
+        subprocess.Popen(["./steam.exe", "-gamepadui"], shell=False)
         return
 
     if is_flatpak:
-        subprocess.run(["flatpak", "run", "com.valvesoftware.Steam", "-gamepadui"])
+        subprocess.Popen(["flatpak", "run", "com.valvesoftware.Steam", "-gamepadui"], shell=False)
         return
 
-    subprocess.run(["./steam.sh", "-gamepadui"])
+    subprocess.Popen(["./steam.sh", "-gamepadui"], shell=False)
+    return
 
 def write_patch(path: Path) -> None:
     try: path.write_text(PATCH_CONTENTS)
