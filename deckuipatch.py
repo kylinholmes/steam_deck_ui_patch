@@ -12,13 +12,14 @@ class Systems(Enum):
     Unknown: str = "Unknown"
 
 PATCH_CONTENTS: str = "steampal_stable_9a24a2bf68596b860cb6710d9ea307a76c29a04d"
-WIN_PATH = Path.home() / PureWindowsPath("Program Files (x86)", "Steam")
+WIN_PATH = PureWindowsPath("C:", "Program Files (x86)", "Steam")
 LIN_PATH = Path.home() / PurePosixPath(".steam", "steam")
 LIN_FLATPAK_PATH = Path.home() / PurePosixPath(".var", "app", "com.valvesoftware.Steam", ".steam", "steam")
 
 SYSTEM: Systems = Systems.Unknown
 
 def os_steam_path() -> str:
+    global SYSTEM 
     opsys = platform.system()
     if opsys == Systems.Lin.value:
         SYSTEM = Systems.Lin 
@@ -33,19 +34,16 @@ def os_steam_path() -> str:
         raise OSError("Unknown OS detected!")
 
 def launch_steam(path, is_flatpak) -> None:
-
     os.chdir(path)
-
     if SYSTEM == Systems.Win: 
-        subprocess.run(["steam.exe", "-gamepadui"])
+        subprocess.run(["./steam.exe", "-gamepadui"])
         return
-    
+
     if is_flatpak:
-        subprocess.run(["flatpak", "run", "com.valvesoftware.Steam", "gamepadui"])
+        subprocess.run(["flatpak", "run", "com.valvesoftware.Steam", "-gamepadui"])
         return
 
     subprocess.run(["./steam.sh", "-gamepadui"])
-    
 
 def write_patch(path: Path) -> None:
     try: path.write_text(PATCH_CONTENTS)
@@ -60,7 +58,7 @@ def remove_patch(path: Path) -> None:
     except FileNotFoundError: raise FileNotFoundError("There is no existing patch file to remove!")
     except IOError as e: raise IOError(e)
 
-def parse_args() -> (Path, bool, bool, bool):
+def parse_args():
 
     parser = argparse.ArgumentParser(description="Patches the steamdeck UI into desktop steam.")
     parser.add_argument("path", type=str, default=os_steam_path(), nargs='?', help="Path to your local steam install.")
@@ -95,7 +93,10 @@ def main() -> None:
     if os.path.isfile(patch_file):
         patch_file_contents = read_patch(patch_file)
         if patch_file_contents == PATCH_CONTENTS:
-            print("[INFO] Existing patch already found. Exiting...")
+            print("[INFO] Existing patch already found.")
+            if launch: 
+                print("[INFO] Launching Steam...")
+                launch_steam(path, flatpak)
             return
         
         print("[INFO] Existing path file found was corrupted. Rewriting...")
@@ -111,5 +112,5 @@ def main() -> None:
 if __name__ == "__main__":
     try: main()
     except KeyboardInterrupt: exit()
-    except Exception as e:
-        print(f"[ERROR] Program failed with response: {e}")
+    #except Exception as e:
+        #print(f"[ERROR] Program failed with response: {e}")
