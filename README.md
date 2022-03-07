@@ -27,4 +27,7 @@ options:
 python3 deckuipatch.py "/path/to/steam"
 ```
 
+### Notice
+This current patch is temporary and is subject to change in the future. Also, if you encounter any bugs feel free to make a pull request :).
+
 ##### Link to source: https://www.reddit.com/r/SteamDeck/comments/t57l4t/how_to_get_the_steam_deck_ui_on_windowsany_linux/
