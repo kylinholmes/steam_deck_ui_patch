@@ -1,4 +1,4 @@
-# steam_deckui_patch
+# steam_deck_ui_patch
 
 The Deck UI patch will patch the regular desktop steam to look like the brand new SteamDeck UI.
 This patch tool currently works on Linux (Flatpak and Regular) as well as Windows.
