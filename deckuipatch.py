@@ -112,5 +112,5 @@ def main() -> None:
 if __name__ == "__main__":
     try: main()
     except KeyboardInterrupt: exit()
-    #except Exception as e:
-        #print(f"[ERROR] Program failed with response: {e}")
+    except Exception as e:
+        print(f"[ERROR] Program failed with response: {e}")
